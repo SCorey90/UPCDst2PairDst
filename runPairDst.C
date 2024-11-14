@@ -1,6 +1,3 @@
-class StMaker;
-class StPairDstMaker;
-
 void runPairDst() {
     gSystem->Load("St_base");
     gSystem->Load("StChain");
@@ -16,7 +13,7 @@ void runPairDst() {
     gSystem->Load("StPairDstMaker");
 
     StPairDstMaker* mk = new StPairDstMaker("PairDstMaker");
-    mk->SetInputFile("/path/to/your/input/file");
+    mk->SetInputFileList("mid14.lis");
     mk->SetOutputFile("output_femtopair.root");
 
     mk->Init();

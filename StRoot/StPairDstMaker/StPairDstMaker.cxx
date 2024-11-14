@@ -11,15 +11,13 @@
 
 ClassImp(StPairDstMaker)
 
-StPairDstMaker::StPairDstMaker(const char* name) : StMaker(name), fOutFile(nullptr), fTree(nullptr), fChain(nullptr), fUpcEvt(nullptr) {
+StPairDstMaker::StPairDstMaker(const char* name) : StMaker(name), fOutFile(nullptr), fTree(nullptr), fChain(new TChain("mUPCTree")), fUpcEvt(nullptr) {
 }
 
 StPairDstMaker::~StPairDstMaker() {
 }
 
 Int_t StPairDstMaker::Init() {
-    fChain = new TChain("mUPCTree");
-    fChain->Add(fInputFile);
     fChain->SetBranchAddress("mUPCEvent", &fUpcEvt);
 
     fOutFile = new TFile(fOutputFile, "RECREATE");
@@ -95,6 +93,14 @@ Int_t StPairDstMaker::Finish() {
     fTree->Write();
     fOutFile->Close();
     return kStOK;
+}
+
+void StPairDstMaker::SetInputFileList(const char* fileList) {
+    std::ifstream infile(fileList);
+    std::string line;
+    while (std::getline(infile, line)) {
+        fChain->Add(line.c_str());
+    }
 }
 
 void StPairDstMaker::ResetFemtoPair() {
