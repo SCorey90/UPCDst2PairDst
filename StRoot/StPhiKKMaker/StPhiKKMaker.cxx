@@ -223,7 +223,7 @@ void post() {
 //_____________________________________________________Main
 // Algorithm______________________________________________________
 void make_ana(
-    TString infile = "/work/data/UPCDstList.txt",
+    TString infile = "/star/u/corey90/star/UPCDst2PairDst/mid14.lis",
     TString outputFile = "output.root") {
 
   make_hists();
@@ -475,5 +475,5 @@ StPhiKKMaker::~StPhiKKMaker(){
 }
 
 void StPhiKKMaker::Make(){
-	make_ana("/work/data/UPCDstList.txt", "output.root");
+	make_ana("/star/u/corey90/star/UPCDst2PairDst/mid14.lis", "output.root");
 }
