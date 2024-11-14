@@ -1,6 +1,6 @@
 #include "StPairDstMaker.h"
-#include "StUPCEvent.h"
-#include "StUPCTrack.h"
+#include "../StUpcDst/StUPCEvent.h"
+#include "../StUpcDst/StUPCTrack.h"
 #include "TChain.h"
 #include "TFile.h"
 #include "TTree.h"
