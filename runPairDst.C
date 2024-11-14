@@ -15,7 +15,7 @@ void runPairDst() {
     StPairDstMaker* mk = new StPairDstMaker("PairDstMaker");
     mk->SetInputFileList("mid14.lis");
     mk->SetOutputFile("output_femtopair.root");
-    mk->SetTriggerId(12345);  // Set the desired trigger ID
+    mk->SetTriggerId(450701);  // Set the desired trigger ID
 
     mk->Init();
     mk->Make();
