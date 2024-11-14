@@ -1,6 +1,8 @@
 #include "StPairDstMaker.h"
 #include "../StUpcDst/StUPCEvent.h"
 #include "../StUpcDst/StUPCTrack.h"
+#include "../StUpcDst/StUPCVertex.h"
+#include "TLorentzVector.h"
 #include "TChain.h"
 #include "TFile.h"
 #include "TTree.h"
