@@ -20,6 +20,7 @@ public:
     void SetInputFileList(const char* fileList);
     void SetInputFile(const char* file) { fInputFile = file; }
     void SetOutputFile(const char* file) { fOutputFile = file; }
+    void SetTriggerId(Int_t triggerId) { fTriggerId = triggerId; }
 
 private:
     TString fInputFile;
@@ -30,6 +31,7 @@ private:
 
     TChain* fChain;
     StUPCEvent* fUpcEvt;
+    Int_t fTriggerId;  // Desired trigger ID
 
     void ResetFemtoPair();
 

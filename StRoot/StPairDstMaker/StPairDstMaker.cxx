@@ -11,7 +11,7 @@
 
 ClassImp(StPairDstMaker)
 
-StPairDstMaker::StPairDstMaker(const char* name) : StMaker(name), fOutFile(nullptr), fTree(nullptr), fChain(new TChain("mUPCTree")), fUpcEvt(nullptr) {
+StPairDstMaker::StPairDstMaker(const char* name) : StMaker(name), fOutFile(nullptr), fTree(nullptr), fChain(new TChain("mUPCTree")), fUpcEvt(nullptr), fTriggerId(-1) {
 }
 
 StPairDstMaker::~StPairDstMaker() {
@@ -21,8 +21,8 @@ Int_t StPairDstMaker::Init() {
     fChain->SetBranchAddress("mUPCEvent", &fUpcEvt);
 
     fOutFile = new TFile(fOutputFile, "RECREATE");
-    fTree = new TTree("FemtoPairTree", "FemtoPairTree");
-    fTree->Branch("FemtoPair", &fFemtoPair);
+    fTree = new TTree("PairDst", "PairDst");
+    fTree->Branch("Pairs", &fFemtoPair);
 
     return kStOK;
 }
@@ -31,6 +31,16 @@ Int_t StPairDstMaker::Make() {
     Long64_t nEntries = fChain->GetEntries();
     for (Long64_t i = 0; i < nEntries; ++i) {
         fChain->GetEntry(i);
+
+        // Print progress every 1000 entries
+        if (i % 1000 == 0) {
+            std::cout << "Processing entry " << i << " / " << nEntries << std::endl;
+        }
+
+        // Check if the event has the desired trigger
+        if (!fUpcEvt->isTrigger(fTriggerId)) {
+            continue;
+        }
 
         int nTracks = fUpcEvt->getNumberOfTracks();
         for (int j = 0; j < nTracks; ++j) {
