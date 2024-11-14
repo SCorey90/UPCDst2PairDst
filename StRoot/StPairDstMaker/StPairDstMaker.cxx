@@ -47,7 +47,7 @@ Int_t StPairDstMaker::Make() {
                 ResetFemtoPair();
 
                 fFemtoPair.mVertexZ = fUpcEvt->getVertex(0)->getPosZ();
-                fFemtoPair.mGRefMult = fUpcEvt->getRefMult();
+                //fFemtoPair.mGRefMult = fUpcEvt->getRefMult();
                 fFemtoPair.mChargeSum = track1->getCharge() + track2->getCharge();
 
                 fFemtoPair.d1_mPt = track1->getPt();
