@@ -48,7 +48,7 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
             break;
         }
     }
-    if {isTriggered = false} return false;
+    if ( !isTriggered ) return false;
 
     StUPCTrack* track1 = evt->getTrack(0);
     StUPCTrack* track2 = evt->getTrack(1);
