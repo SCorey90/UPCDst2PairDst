@@ -71,13 +71,17 @@ Int_t StPairDstMaker::Make() {
         }
 
         //Check if the event passes the selection criteria
-        // if (!eventSelection(fUpcEvt)) {
-        //     continue;
-        // }
+        if (!eventSelection(fUpcEvt)) {
+            continue;
+        }
+
+        std::cout << "Event passed selection" << std::endl;
 
         // Get the two tracks
         StUPCTrack* track1 = fUpcEvt->getTrack(1);
         StUPCTrack* track2 = fUpcEvt->getTrack(2);
+
+        std::cout << "Got tracks" << std::endl;
 
         // Ensure track1 is positive and track2 is negative if they have opposite charges
         if (track1->getCharge() * track2->getCharge() < 0) {
@@ -86,14 +90,20 @@ Int_t StPairDstMaker::Make() {
             }
         }
 
+        std::cout << "Swapped tracks" << std::endl;
+
         // Fill FemtoPair with track information
         ResetFemtoPair();
+
+        std::cout << "Reset FemtoPair" << std::endl;
 
         fFemtoPair.mVertexZ = fUpcEvt->getVertex(0)->getPosZ();
         fFemtoPair.mGRefMult = fUpcEvt->getNGlobTracks();
         fFemtoPair.mZDCEast = fUpcEvt->getZDCUnAttEast();
         fFemtoPair.mZDCWest = fUpcEvt->getZDCUnAttWest();
         fFemtoPair.mChargeSum = track1->getCharge() + track2->getCharge();
+
+        std::cout << "Filled event information" << std::endl;
 
         fFemtoPair.d1_mPt = track1->getPt();
         fFemtoPair.d1_mEta = track1->getEta();
@@ -115,6 +125,8 @@ Int_t StPairDstMaker::Make() {
         }
         fFemtoPair.d1_mLength = tofpathlength1;
 
+        std::cout << "Filled track 1 information" << std::endl;
+
         fFemtoPair.d2_mPt = track2->getPt();
         fFemtoPair.d2_mEta = track2->getEta();
         fFemtoPair.d2_mPhi = track2->getPhi();
@@ -135,6 +147,8 @@ Int_t StPairDstMaker::Make() {
         }
         fFemtoPair.d2_mLength = tofpathlength2;
 
+        std::cout << "Filled track 2 information" << std::endl;
+
         TLorentzVector lv1, lv2, lv;
         lv1.SetPtEtaPhiM(track1->getPt(), track1->getEta(), track1->getPhi(), 0.13957039);
         lv2.SetPtEtaPhiM(track2->getPt(), track2->getEta(), track2->getPhi(), 0.13957039);
@@ -145,6 +159,8 @@ Int_t StPairDstMaker::Make() {
         fFemtoPair.mPhi = lv.Phi();
         fFemtoPair.mMass = lv.M();
         fFemtoPair.mRapidity = lv.Rapidity();
+
+        std::cout << "Filled pair information" << std::endl;
 
         fTree->Fill();
     }
