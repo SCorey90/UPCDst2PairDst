@@ -79,8 +79,8 @@ Int_t StPairDstMaker::Make() {
         std::cout << "Event passed selection" << std::endl;
 
         // Get the two tracks
-        StUPCTrack* track1 = fUpcEvt->getTrack(1);
-        StUPCTrack* track2 = fUpcEvt->getTrack(2);
+        StUPCTrack* track1 = fUpcEvt->getTrack(0);
+        StUPCTrack* track2 = fUpcEvt->getTrack(1);
 
         std::cout << "Got tracks" << std::endl;
 
