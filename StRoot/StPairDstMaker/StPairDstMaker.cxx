@@ -9,10 +9,11 @@
 #include "TString.h"
 #include <iostream>
 #include <utility>
+#include <fstream>
 
 ClassImp(StPairDstMaker)
 
-StPairDstMaker::StPairDstMaker(const char* name) : StMaker(name), fOutFile(nullptr), fTree(nullptr), fChain(new TChain("mUPCTree")), fUpcEvt(nullptr), fTriggerId(-1) {
+StPairDstMaker::StPairDstMaker(const char* name) : StMaker(name), fOutFile(nullptr), fTree(nullptr), fChain(new TChain("mUPCTree")), fUpcEvt(nullptr) {
 }
 
 StPairDstMaker::~StPairDstMaker() {
@@ -37,7 +38,14 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     int nVertices = evt->getNPrimVertices();
     if (nVertices != 1) return false;
 
-    if (!evt->isTrigger(fTriggerId)) return false;
+    bool triggerPassed = false;
+    for (int i=0;i<fTriggerIds.size();++i) {
+        if (evt->isTrigger(fTriggerIds[i])) {
+            triggerPassed = true;
+            break;
+        }
+    }
+    if (!triggerPassed) return false;
 
     StUPCTrack* track1 = evt->getTrack(0);
     StUPCTrack* track2 = evt->getTrack(1);
@@ -127,7 +135,7 @@ Int_t StPairDstMaker::Make() {
         fFemtoPair.d1_mDCA = track1->getDcaXY();
         fFemtoPair.d1_mTof = track1->getTofTime();
         double tofpathlength1  = track1->getTofPathLength();
-        if (tofpathlength1 > 0) {
+        if (tofpathlength1 > 1) {
             fFemtoPair.d1_mMatchFlag = 1;
         } else {
             fFemtoPair.d1_mMatchFlag = 0;
@@ -149,7 +157,7 @@ Int_t StPairDstMaker::Make() {
         fFemtoPair.d2_mDCA = track2->getDcaXY();
         fFemtoPair.d2_mTof = track2->getTofTime();
         double tofpathlength2  = track2->getTofPathLength();
-        if (tofpathlength2 > 0) {
+        if (tofpathlength2 > 1) {
             fFemtoPair.d2_mMatchFlag = 1;
         } else {
             fFemtoPair.d2_mMatchFlag = 0;
