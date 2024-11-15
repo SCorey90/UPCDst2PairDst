@@ -21,7 +21,6 @@ public:
     void SetInputFile(const char* file) { fInputFile = file; }
     void SetOutputFile(const char* file) { fOutputFile = file; }
     void SetTriggerId(Int_t triggerId) { fTriggerId = triggerId; }
-    void SetTriggerIds(const std::vector<Int_t>& triggerIds) { fTriggerIds = triggerIds; }
 
 private:
     TString fInputFile;
@@ -32,8 +31,7 @@ private:
 
     TChain* fChain;
     StUPCEvent* fUpcEvt;
-    std::vector<Int_t> fTriggerIds;  // Desired trigger IDs
-    Int_t fTriggerId; // Single trigger ID (for backward compatibility)
+    std::vector<Int_t> fTriggerIds;  // Desired trigger ID
 
     void ResetFemtoPair();
 
