@@ -27,8 +27,8 @@ Int_t StPairDstMaker::Init() {
     return kStOK;
 }
 
-bool StPairDstMaker::eventSelection(fUpcEvt evt){
-    int nTracks = evt->getNPrimaryTracks();
+bool StPairDstMaker::eventSelection(StUPCEvent* evt){
+    int nTracks = evt->getNPrimTracks();
     if (nTracks != 2) return false;
 
     int nVertices = evt->getNPrimVertices();

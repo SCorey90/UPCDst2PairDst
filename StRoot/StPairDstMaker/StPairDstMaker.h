@@ -17,7 +17,7 @@ public:
     virtual Int_t Make();
     virtual Int_t Finish();
 
-    bool eventSelection(fUpcEvt evt);
+    bool eventSelection(StUPCEvent* evt);
 
     void SetInputFileList(const char* fileList);
     void SetInputFile(const char* file) { fInputFile = file; }
