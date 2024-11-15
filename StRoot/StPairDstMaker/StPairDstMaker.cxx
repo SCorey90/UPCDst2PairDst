@@ -167,6 +167,8 @@ Int_t StPairDstMaker::Make() {
         std::cout << "Filled pair information" << std::endl;
 
         fTree->Fill();
+
+        std::cout << "Filled tree" << std::endl;
     }
     return kStOK;
 }
