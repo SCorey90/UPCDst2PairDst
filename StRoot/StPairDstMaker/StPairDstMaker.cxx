@@ -80,11 +80,11 @@ Int_t StPairDstMaker::Make() {
         StUPCTrack* track2 = fUpcEvt->getTrack(1);
 
         // Ensure track1 is positive and track2 is negative if they have opposite charges
-        if (track1->getCharge() * track2->getCharge() < 0) {
-            if (track1->getCharge() < 0) {
-                std::swap(track1, track2);
-            }
-        }
+        // if (track1->getCharge() * track2->getCharge() < 0) {
+        //     if (track1->getCharge() < 0) {
+        //         std::swap(track1, track2);
+        //     }
+        // }
 
         // Fill FemtoPair with track information
         ResetFemtoPair();
