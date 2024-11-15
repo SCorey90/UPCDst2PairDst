@@ -29,6 +29,8 @@ Int_t StPairDstMaker::Init() {
 }
 
 bool StPairDstMaker::eventSelection(StUPCEvent* evt){
+    if (!evt) return false;
+
     int nTracks = evt->getNPrimTracks();
     if (nTracks != 2) return false;
 
