@@ -17,6 +17,8 @@ public:
     virtual Int_t Make();
     virtual Int_t Finish();
 
+    bool eventSelection(StUPCEvent* evt);
+
     void SetInputFileList(const char* fileList);
     void SetInputFile(const char* file) { fInputFile = file; }
     void SetOutputFile(const char* file) { fOutputFile = file; }
@@ -31,7 +33,7 @@ private:
 
     TChain* fChain;
     StUPCEvent* fUpcEvt;
-    std::vector<Int_t> fTriggerIds;  // Desired trigger ID
+    Int_t fTriggerId;  // Desired trigger ID
 
     void ResetFemtoPair();
 
