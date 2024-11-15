@@ -66,6 +66,7 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
 Int_t StPairDstMaker::Make() {
     Long64_t nEntries = fChain->GetEntries();
     for (Long64_t i = 0; i < nEntries; ++i) {
+        std::cout << "Processing entry " << i << " / " << nEntries << std::endl;
         fChain->GetEntry(i);
 
         // Print progress every 1000 entries
