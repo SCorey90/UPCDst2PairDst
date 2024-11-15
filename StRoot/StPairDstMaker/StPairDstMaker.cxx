@@ -85,6 +85,10 @@ Int_t StPairDstMaker::Make() {
         StUPCTrack* track1 = fUpcEvt->getTrack(0);
         StUPCTrack* track2 = fUpcEvt->getTrack(1);
 
+        if ( !track1 || !track2 ) {
+            continue;
+        }
+
         std::cout << "Got tracks" << std::endl;
 
         // Ensure track1 is positive and track2 is negative if they have opposite charges
