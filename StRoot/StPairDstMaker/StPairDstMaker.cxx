@@ -67,7 +67,11 @@ Int_t StPairDstMaker::Make() {
     Long64_t nEntries = fChain->GetEntries();
     for (Long64_t i = 0; i < nEntries; ++i) {
         std::cout << "Processing entry " << i << " / " << nEntries << std::endl;
-        fChain->GetEntry(i);
+        //fChain->GetEntry(i);
+        if (fChain->GetEntry(i) <= 0) {
+            std::cerr << "Error reading entry " << i << std::endl;
+            continue;
+        }
 
         // Print progress every 1000 entries
         if (i % 1000 == 0) {
