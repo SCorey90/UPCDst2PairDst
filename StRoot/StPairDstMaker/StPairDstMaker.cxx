@@ -42,6 +42,8 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     StUPCTrack* track1 = evt->getTrack(0);
     StUPCTrack* track2 = evt->getTrack(1);
 
+    if ( !track1 || !track2 ) return false;
+
     double nSigmaPi1 = track1->getNSigmasTPCPion();
     double nSigmaPi2 = track2->getNSigmasTPCPion();
     double chipipi2 = nSigmaPi1*nSigmaPi1 + nSigmaPi2*nSigmaPi2;
@@ -67,11 +69,7 @@ Int_t StPairDstMaker::Make() {
     Long64_t nEntries = fChain->GetEntries();
     for (Long64_t i = 0; i < nEntries; ++i) {
         std::cout << "Processing entry " << i << " / " << nEntries << std::endl;
-        //fChain->GetEntry(i);
-        if (fChain->GetEntry(i) <= 0) {
-            std::cerr << "Error reading entry " << i << std::endl;
-            continue;
-        }
+        fChain->GetEntry(i);
 
         // Print progress every 1000 entries
         if (i % 1000 == 0) {
@@ -88,10 +86,6 @@ Int_t StPairDstMaker::Make() {
         // Get the two tracks
         StUPCTrack* track1 = fUpcEvt->getTrack(0);
         StUPCTrack* track2 = fUpcEvt->getTrack(1);
-
-        if ( !track1 || !track2 ) {
-            continue;
-        }
 
         std::cout << "Got tracks" << std::endl;
 
