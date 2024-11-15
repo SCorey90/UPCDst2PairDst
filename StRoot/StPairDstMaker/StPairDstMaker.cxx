@@ -86,6 +86,7 @@ Int_t StPairDstMaker::Make() {
 
         // Ensure track1 is positive and track2 is negative if they have opposite charges
         if (track1->getCharge() * track2->getCharge() < 0) {
+            std::cout << "checked charge" << std::endl;
             if (track1->getCharge() < 0) {
                 StUPCTrack* temp = track1;
                 track1 = track2;
