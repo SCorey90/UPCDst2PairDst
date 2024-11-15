@@ -15,7 +15,9 @@ void runPairDst() {
     StPairDstMaker* mk = new StPairDstMaker("PairDstMaker");
     mk->SetInputFileList("mid14.lis");
     mk->SetOutputFile("output_femtopair.root");
-    std::vector<Int_t> triggers = {450701, 450711};
+    std::vector<Int_t> triggers;
+    triggers.push_back(450701);
+    triggers.push_back(450711);
     mk->SetTriggerIds( triggers );  // Set the desired trigger ID
 
     mk->Init();
