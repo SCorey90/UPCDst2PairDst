@@ -12,7 +12,10 @@
 
 ClassImp(StPairDstMaker)
 
-StPairDstMaker::StPairDstMaker(const char* name) : StMaker(name), fOutFile(nullptr), fTree(nullptr), fChain(new TChain("mUPCTree")), fUpcEvt(nullptr), fTriggerId(-1) {
+// StPairDstMaker::StPairDstMaker(const char* name) : StMaker(name), fOutFile(nullptr), fTree(nullptr), fChain(new TChain("mUPCTree")), fUpcEvt(nullptr), fTriggerId(-1) {
+// }
+//
+StPairDstMaker::StPairDstMaker(const char* name) : StMaker(name), fOutFile(nullptr), fTree(nullptr), fChain(new TChain("mUPCTree")), fUpcEvt(nullptr), fTriggerIds({-1}) {
 }
 
 StPairDstMaker::~StPairDstMaker() {
@@ -37,7 +40,14 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     int nVertices = evt->getNPrimVertices();
     if (nVertices != 1) return false;
 
-    if (!evt->isTrigger(fTriggerId)) return false;
+    //if (!evt->isTrigger(fTriggerId)) return false;
+    bool isTriggered = false;
+    for (int i = 0; i < fTriggerIds.size(); ++i) {
+        if (evt->isTrigger(fTriggerIds[i])) {
+            isTriggered = true;
+            break;
+        }
+    }
 
     StUPCTrack* track1 = evt->getTrack(0);
     StUPCTrack* track2 = evt->getTrack(1);
