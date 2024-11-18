@@ -23,6 +23,7 @@
     <SandBox>
         <Package>
             <File>file:./runPairDst.C</File>
+            <File>file:./.sl73_gcc485/</File>
         </Package>
     </SandBox>
 
