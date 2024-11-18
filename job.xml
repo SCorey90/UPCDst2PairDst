@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job name="UPCDst2PairDst" maxFilesPerProcess="1" filesPerHour="5" fileListSyntax="paths">
+    <command>
+        <![CDATA[
+        starver dev
+
+        inputFileList="/star/u/corey90/star/UPCDst2PairDst/mid14.lis"
+        outputFileName="/star/u/corey90/star/UPCDst2PairDst/testJob.root"
+
+        root4star -l -q "/star/u/corey90/star/UPCDst2PairDst/runPairDst.C(\"${inputFileList}\", \"${outputFileName}\")"
+        ]]>
+    </command>
+
+    <stdout URL="file:stdout.log"/>
+    <stderr URL="file:stderr.log"/>
+
+    <input URL="catalog:star.bnl.gov?dataset=production_2023/UPCDst/FullField/daq/2023" nFiles="all"/>
+
+    <output fromScratch="*.root" toURL="file:/star/u/${USER}/UPCDst2PairDst/outputs/"/>
+    <output fromScratch="*.log" toURL="file:/star/u/${USER}/UPCDst2PairDst/logs/"/>
+
+    <sandBox>
+        <package>
+            <file>runPairDst.C</file>
+        </package>
+    </sandBox>
+
+    <jobType>user</jobType>
+    <diskSpace>5GB</diskSpace>
+    <memory>2GB</memory>
+    <cpuTime>2:00:00</cpuTime>
+</job>
