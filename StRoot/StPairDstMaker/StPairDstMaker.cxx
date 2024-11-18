@@ -117,6 +117,7 @@ Int_t StPairDstMaker::Make() {
 
         std::cout << "Reset FemtoPair" << std::endl;
 
+        fFemtoPair.mRunID = fUpcEvt->getRunNumber();
         fFemtoPair.mVertexZ = fUpcEvt->getVertex(0)->getPosZ();
         fFemtoPair.mGRefMult = fUpcEvt->getNGlobTracks();
         fFemtoPair.mZDCEast = fUpcEvt->getZDCUnAttEast();

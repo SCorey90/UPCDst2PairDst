@@ -14,16 +14,17 @@ public:
     ClassDef( FemtoDstBranch, 1 )
 };
 
-class FemtoPair 
+class FemtoPair
 {
 public:
-    virtual const char* classname() const { return "FemtoPair"; } 
+    virtual const char* classname() const { return "FemtoPair"; }
     FemtoPair() {
-        
+
     }
     ~FemtoPair() {}
 
     void reset(){
+        mRunID                = -999;
         mVertexZ              = -999;
         mDeltaVertexZ         = -999;
         mGRefMult             = 0;
@@ -76,6 +77,7 @@ public:
         d2_mPid               = 0.0;
     }
     void copy( FemtoPair * that ){
+        this->mRunID                = that->mRunID;
         this->mVertexZ              = that->mVertexZ;
         this->mZDCEast              = that->mZDCEast;
         this->mZDCWest              = that->mZDCWest;
@@ -132,12 +134,13 @@ public:
     }
 
     // Event
+    Int_t       mRunID;                 // Run number
     Float_t     mVertexZ;               // Event VertexZ
     Float_t     mDeltaVertexZ;          // delta vz
     UShort_t    mGRefMult;              // global RefMult
     UShort_t    mZDCEast;               // ZDC East
     UShort_t    mZDCWest;               // ZDC West
-    
+
 
     // Pair
     Char_t    mChargeSum;
@@ -148,10 +151,10 @@ public:
     Float_t   mRapidity;
 
     // BTOF Stuff
-    Float_t   d1_mYLocal;                   
-    Float_t   d1_mZLocal;                   
-    Float_t   d1_mTof;      
-    Char_t    d1_mMatchFlag;                
+    Float_t   d1_mYLocal;
+    Float_t   d1_mZLocal;
+    Float_t   d1_mTof;
+    Char_t    d1_mMatchFlag;
     Float_t   d1_mLength;
 
     // Track Stuff
@@ -170,10 +173,10 @@ public:
     Float_t     d1_mPid;
 
     // BTOF Stuff
-    Float_t   d2_mYLocal;                   
-    Float_t   d2_mZLocal;                   
-    Float_t   d2_mTof;      
-    Char_t    d2_mMatchFlag;                
+    Float_t   d2_mYLocal;
+    Float_t   d2_mZLocal;
+    Float_t   d2_mTof;
+    Char_t    d2_mMatchFlag;
     Float_t   d2_mLength;
 
     // Track Stuff
