@@ -13,4 +13,4 @@ inputFileList=$1
 outputFileName=$2
 
 # Run the ROOT macro with the provided arguments
-root -l -q "/star/u/corey90/star/UPCDst2PairDst/runPairDst.C(\"${inputFileList}\", \"${outputFileName}\")"
+root4star -l -q "/star/u/corey90/star/UPCDst2PairDst/runPairDst.C(\"${inputFileList}\", \"${outputFileName}\")"
