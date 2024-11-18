@@ -1,4 +1,37 @@
-void runPairDst() {
+// void runPairDst() {
+//     gSystem->Load("St_base");
+//     gSystem->Load("StChain");
+//     gSystem->Load("StEvent");
+//     gSystem->Load("libStDb_Tables.so");
+//     gSystem->Load("libgeometry_Tables.so");
+//     gSystem->Load("StEmcUtil");
+
+//     gSystem->Load("StStrangeMuDstMaker");
+//     gSystem->Load("StMuDSTMaker");
+
+//     gSystem->Load("StUpcDst");
+//     gSystem->Load("StPairDstMaker");
+
+//     StPairDstMaker* mk = new StPairDstMaker("PairDstMaker");
+//     mk->SetInputFileList("mid14.lis");
+//     mk->SetOutputFile("output_femtopair.root");
+//     std::vector<Int_t> triggers;
+//     triggers.push_back(450701);
+//     triggers.push_back(450711);
+//     mk->SetTriggerIds( triggers );  // Set the desired trigger ID
+
+//     mk->Init();
+//     mk->Make();
+//     mk->Finish();
+
+//     delete mk;
+// }
+//
+#include <TString.h>
+#include <TSystem.h>
+#include <vector>
+
+void runPairDst(const char* inputFileList = "mid14.lis", const char* outputFileName = "output_femtopair.root") {
     gSystem->Load("St_base");
     gSystem->Load("StChain");
     gSystem->Load("StEvent");
@@ -13,16 +46,21 @@ void runPairDst() {
     gSystem->Load("StPairDstMaker");
 
     StPairDstMaker* mk = new StPairDstMaker("PairDstMaker");
-    mk->SetInputFileList("mid14.lis");
-    mk->SetOutputFile("output_femtopair.root");
+    mk->SetInputFileList(inputFileList);
+    mk->SetOutputFile(outputFileName);
     std::vector<Int_t> triggers;
     triggers.push_back(450701);
     triggers.push_back(450711);
-    mk->SetTriggerIds( triggers );  // Set the desired trigger ID
+    mk->SetTriggerIds(triggers);  // Set the desired trigger ID
 
     mk->Init();
     mk->Make();
     mk->Finish();
 
     delete mk;
+}
+
+// This function will be called to run the macro with command line arguments
+void runPairDstWrapper(const char* inputFileList, const char* outputFileName) {
+    runPairDst(inputFileList, outputFileName);
 }
