@@ -4,7 +4,7 @@
 executable = run.sh
 
 # Arguments to pass to the script
-arguments = mid14.lis testJob.root
+arguments = /star/u/corey90/star/UPCDst2PairDst/mid14.lis /star/u/corey90/star/UPCDst2PairDst/testJob.root
 
 # Specify the log, output, and error files
 log = run.log
