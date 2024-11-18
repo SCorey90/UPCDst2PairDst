@@ -4,7 +4,7 @@
     <stderr URL="file:/star/u/${USER}/star/UPCDst2PairDst/logs/err_$JOBID.err"/>
 
     <output fromScratch="*.root" toURL="file:/star/u/corey90/UPCDst2PairDst/outputs/"/>
-    <input URL="filelist:/star/u/${USER}/star/UPCDst2PairDst/mid14.lis" nFiles="all"/>
+    <input URL="filelist:/star/u/corey90/star/UPCDst2PairDst/mid14.lis" nFiles="all"/>
 
     <command>
         starver dev
