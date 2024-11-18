@@ -19,11 +19,11 @@
     <output fromScratch="*.root" toURL="file:/star/u/${USER}/UPCDst2PairDst/outputs/"/>
     <output fromScratch="*.log" toURL="file:/star/u/${USER}/UPCDst2PairDst/logs/"/>
 
-    <sandBox>
+    <SandBox>
         <package>
             <file>runPairDst.C</file>
         </package>
-    </sandBox>
+    </SandBox>
 
     <jobType>user</jobType>
     <diskSpace>5GB</diskSpace>
