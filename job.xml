@@ -7,11 +7,13 @@
     <input URL="filelist:/star/u/corey90/star/UPCDst2PairDst/mid14.lis" nFiles="all"/>
 
     <command>
+        <![CDATA[
         starver dev
         ln -s "$FILELIST" input.lis
         ls
         root4star -b -q -l "/star/u/corey90/star/UPCDst2PairDst/runPairDst.C(\"input.lis\", \"output.root\")"
         mv output.root output_PairDst_${JOBID}.root
+        ]]>
     </command>
 
     <SandBox>
@@ -19,5 +21,9 @@
             <File>file:./runPairDst.C</File>
         </Package>
     </SandBox>
+
+    <Generator>
+        <Location>/star/u/corey90/star/UPCDst2PairDst/gen</Location>
+    </Generator>
 
 </job>
