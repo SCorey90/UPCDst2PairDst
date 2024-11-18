@@ -13,7 +13,7 @@
         ls
         echo "Listing directory contents"
         echo "Running ROOT macro"
-        root4star -b -q -l "/star/u/corey90/star/UPCDst2PairDst/runPairDst.C(\"/star/u/corey90/star/UPCDst2PairDst/mid14.lis\", \"output.root\")"
+        root4star -b -q -l '/star/u/corey90/star/UPCDst2PairDst/runPairDst.C("/star/u/corey90/star/UPCDst2PairDst/mid14.lis", "output.root" ) '
         echo "ROOT macro executed"
         mv output.root output_PairDst_${JOBID}.root
         echo "Output file moved"
