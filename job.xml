@@ -7,11 +7,18 @@
     <input URL="filelist:/star/u/corey90/star/UPCDst2PairDst/mid14.lis" nFiles="all"/>
 
     <command>
+        <![CDATA[
         starver dev
+        echo "Environment setup complete"
         ln -s "$FILELIST" input.lis
+        echo "Symbolic link created"
         ls
+        echo "Listing directory contents"
         root4star -b -q -l "/star/u/corey90/star/UPCDst2PairDst/runPairDst.C(\"input.lis\", \"output.root\")"
+        echo "ROOT macro executed"
         mv output.root output_PairDst_${JOBID}.root
+        echo "Output file moved"
+        ]]>
     </command>
 
     <SandBox>
