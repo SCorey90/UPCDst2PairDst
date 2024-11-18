@@ -1,5 +1,7 @@
 #!/bin/bash
 
+starver dev
+
 # Check if the correct number of arguments is provided
 if [ "$#" -ne 2 ]; then
     echo "Usage: $0 /path/to/inputFileList.txt /path/to/outputFileName.root"
