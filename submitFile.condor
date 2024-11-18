@@ -1,0 +1,28 @@
+# Condor submit file for running run.sh
+
+# Specify the executable script
+executable = run.sh
+
+# Arguments to pass to the script
+arguments = mid14.lis testJob.root
+
+# Specify the log, output, and error files
+log = run.log
+output = run.out
+error = run.err
+
+# Request resources
+request_cpus = 1
+request_memory = 2GB
+request_disk = 2GB
+
+# Specify the universe
+universe = vanilla
+
+# Transfer files
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = runPairDst.C
+
+# Queue the job
+queue
