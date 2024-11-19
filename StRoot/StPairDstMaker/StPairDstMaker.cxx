@@ -79,30 +79,30 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
 Int_t StPairDstMaker::Make() {
     Long64_t nEntries = fChain->GetEntries();
     for (Long64_t i = 0; i < nEntries; ++i) {
-        std::cout << "Processing entry " << i << " / " << nEntries << std::endl;
+        //std::cout << "Processing entry " << i << " / " << nEntries << std::endl;
         fChain->GetEntry(i);
 
         // Print progress every 1000 entries
-        if (i % 1000 == 0) {
-            std::cout << "Processing entry " << i << " / " << nEntries << std::endl;
-        }
+        // if (i % 1000 == 0) {
+        //     std::cout << "Processing entry " << i << " / " << nEntries << std::endl;
+        // }
 
         //Check if the event passes the selection criteria
         if (!eventSelection(fUpcEvt)) {
             continue;
         }
 
-        std::cout << "Event passed selection" << std::endl;
+        //std::cout << "Event passed selection" << std::endl;
 
         // Get the two tracks
         StUPCTrack* track1 = fUpcEvt->getTrack(0);
         StUPCTrack* track2 = fUpcEvt->getTrack(1);
 
-        std::cout << "Got tracks" << std::endl;
+        // std::cout << "Got tracks" << std::endl;
 
         // Ensure track1 is positive and track2 is negative if they have opposite charges
         if (track1->getCharge() * track2->getCharge() < 0) {
-            std::cout << "checked charge" << std::endl;
+            // std::cout << "checked charge" << std::endl;
             if (track1->getCharge() < 0) {
                 StUPCTrack* temp = track1;
                 track1 = track2;
@@ -110,12 +110,12 @@ Int_t StPairDstMaker::Make() {
             }
         }
 
-        std::cout << "Swapped tracks" << std::endl;
+        // std::cout << "Swapped tracks" << std::endl;
 
         // Fill FemtoPair with track information
         ResetFemtoPair();
 
-        std::cout << "Reset FemtoPair" << std::endl;
+        // std::cout << "Reset FemtoPair" << std::endl;
 
         fFemtoPair.mRunID = fUpcEvt->getRunNumber();
         fFemtoPair.mVertexZ = fUpcEvt->getVertex(0)->getPosZ();
@@ -124,7 +124,7 @@ Int_t StPairDstMaker::Make() {
         fFemtoPair.mZDCWest = fUpcEvt->getZDCUnAttWest();
         fFemtoPair.mChargeSum = track1->getCharge() + track2->getCharge();
 
-        std::cout << "Filled event information" << std::endl;
+        // std::cout << "Filled event information" << std::endl;
 
         fFemtoPair.d1_mPt = track1->getPt();
         fFemtoPair.d1_mEta = track1->getEta();
@@ -146,7 +146,7 @@ Int_t StPairDstMaker::Make() {
         }
         fFemtoPair.d1_mLength = tofpathlength1;
 
-        std::cout << "Filled track 1 information" << std::endl;
+        // std::cout << "Filled track 1 information" << std::endl;
 
         fFemtoPair.d2_mPt = track2->getPt();
         fFemtoPair.d2_mEta = track2->getEta();
@@ -168,7 +168,7 @@ Int_t StPairDstMaker::Make() {
         }
         fFemtoPair.d2_mLength = tofpathlength2;
 
-        std::cout << "Filled track 2 information" << std::endl;
+        // std::cout << "Filled track 2 information" << std::endl;
 
         TLorentzVector lv1, lv2, lv;
         lv1.SetPtEtaPhiM(track1->getPt(), track1->getEta(), track1->getPhi(), 0.13957039);
@@ -181,11 +181,11 @@ Int_t StPairDstMaker::Make() {
         fFemtoPair.mMass = lv.M();
         fFemtoPair.mRapidity = lv.Rapidity();
 
-        std::cout << "Filled pair information" << std::endl;
+        // std::cout << "Filled pair information" << std::endl;
 
         fTree->Fill();
 
-        std::cout << "Filled tree" << std::endl;
+        // std::cout << "Filled tree" << std::endl;
     }
     return kStOK;
 }
