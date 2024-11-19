@@ -203,6 +203,7 @@ void StPairDstMaker::SetInputFileList(const char* fileList) {
     while (std::getline(infile, line)) {
         fChain->Add(line.c_str());
     }
+
 }
 
 void StPairDstMaker::ResetFemtoPair() {
