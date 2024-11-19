@@ -1,4 +1,4 @@
-<job name="UPCDst2PairDst" simulateSubmission="false" maxFilesPerProcess="100" filesPerHour="100" fileListSyntax="paths">
+<job name="UPCDst2PairDst" simulateSubmission="false" maxFilesPerProcess="1" filesPerHour="100" fileListSyntax="paths">
 
     <stdout URL="file:/star/u/corey90/star/UPCDst2PairDst/logs/log_$JOBID.log"/>
     <stderr URL="file:/star/u/corey90/star/UPCDst2PairDst/logs/err_$JOBID.err"/>
