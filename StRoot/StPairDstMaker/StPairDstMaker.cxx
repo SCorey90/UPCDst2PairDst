@@ -40,7 +40,6 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     int nVertices = evt->getNPrimVertices();
     if (nVertices != 1) return false;
 
-    //if (!evt->isTrigger(fTriggerId)) return false;
     bool isTriggered = false;
     for (int i = 0; i < fTriggerIds.size(); ++i) {
         if (evt->isTrigger(fTriggerIds[i])) {
@@ -200,10 +199,12 @@ Int_t StPairDstMaker::Finish() {
 void StPairDstMaker::SetInputFileList(const char* fileList) {
     std::ifstream infile(fileList);
     std::string line;
+    int fileCount = 0;
     while (std::getline(infile, line)) {
         fChain->Add(line.c_str());
+        fileCount++;
     }
-
+    std::cout << "Number of files added to the chain: " << fileCount << std::endl;
 }
 
 void StPairDstMaker::ResetFemtoPair() {
