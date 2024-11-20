@@ -37,8 +37,8 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     int nTracks = evt->getNPrimTracks();
     if (nTracks != 2) return false;
 
-    int nVertices = evt->getNPrimVertices();
-    if (nVertices != 1) return false;
+    // int nVertices = evt->getNPrimVertices();
+    // if (nVertices != 1) return false;
 
     bool isTriggered = false;
     for (int i = 0; i < fTriggerIds.size(); ++i) {
