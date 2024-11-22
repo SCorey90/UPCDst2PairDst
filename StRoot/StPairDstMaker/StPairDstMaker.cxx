@@ -7,14 +7,12 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TString.h"
+#include "TH1F.h"
 #include <iostream>
 #include <utility>
 
 ClassImp(StPairDstMaker)
 
-// StPairDstMaker::StPairDstMaker(const char* name) : StMaker(name), fOutFile(nullptr), fTree(nullptr), fChain(new TChain("mUPCTree")), fUpcEvt(nullptr), fTriggerId(-1) {
-// }
-//
 StPairDstMaker::StPairDstMaker(const char* name) : StMaker(name), fOutFile(nullptr), fTree(nullptr), fChain(new TChain("mUPCTree")), fUpcEvt(nullptr), fTriggerIds({-1}) {
 }
 
@@ -28,6 +26,18 @@ Int_t StPairDstMaker::Init() {
     fTree = new TTree("PairDst", "PairDst");
     fTree->Branch("Pairs", &fFemtoPair);
 
+    // Create histograms
+    hTriggerId = new TH1F("hTriggerId", "Trigger ID", 10, 450700, 450710);
+    hNPrimTracks = new TH1F("hNPrimTracks", "Number of Primary Tracks", 10, 0, 10);
+    hNPrimVertices = new TH1F("hNPrimVertices", "Number of Primary Vertices", 10, 0, 10);
+    hChiPiPi = new TH1F("hChiPiPi", "Chi^2 of Pion Hypothesis", 100, 0, 50);
+    hDcaXY1 = new TH1F("hDcaXY1", "DCA XY of Track 1", 100, 0, 10);
+    hDcaXY2 = new TH1F("hDcaXY2", "DCA XY of Track 2", 100, 0, 10);
+    hNHitsFit1 = new TH1F("hNHitsFit1", "Number of Hits Fit for Track 1", 50, 0, 50);
+    hNHitsFit2 = new TH1F("hNHitsFit2", "Number of Hits Fit for Track 2", 50, 0, 50);
+    hNHitsDedx1 = new TH1F("hNHitsDedx1", "Number of Hits dE/dx for Track 1", 50, 0, 50);
+    hNHitsDedx2 = new TH1F("hNHitsDedx2", "Number of Hits dE/dx for Track 2", 50, 0, 50);
+
     return kStOK;
 }
 
@@ -35,11 +45,7 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     if (!evt) return false;
 
     int nTracks = evt->getNPrimTracks();
-    if (nTracks != 2) return false;
-
-    // int nVertices = evt->getNPrimVertices();
-    // if (nVertices != 1) return false;
-
+    int nVertices = evt->getNPrimVertices();
     bool isTriggered = false;
     for (int i = 0; i < fTriggerIds.size(); ++i) {
         if (evt->isTrigger(fTriggerIds[i])) {
@@ -47,30 +53,45 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
             break;
         }
     }
-    if ( !isTriggered ) return false;
 
     StUPCTrack* track1 = evt->getTrack(0);
     StUPCTrack* track2 = evt->getTrack(1);
 
-    if ( !track1 || !track2 ) return false;
+    if (!track1 || !track2) return false;
 
     double nSigmaPi1 = track1->getNSigmasTPCPion();
     double nSigmaPi2 = track2->getNSigmasTPCPion();
-    double chipipi2 = nSigmaPi1*nSigmaPi1 + nSigmaPi2*nSigmaPi2;
-
-    if (chipipi2 > 20) return false;
+    double chipipi2 = nSigmaPi1 * nSigmaPi1 + nSigmaPi2 * nSigmaPi2;
 
     double dcaXY1 = track1->getDcaXY();
     double dcaXY2 = track2->getDcaXY();
-
-    if (dcaXY1 > 3 && dcaXY2 > 3) return false;
 
     int nHitsFit1 = track1->getNhitsFit();
     int nHitsFit2 = track2->getNhitsFit();
     int nHitsDEDx1 = track1->getNhitsDEdx();
     int nHitsDEDx2 = track2->getNhitsDEdx();
 
-    if (nHitsFit1 < 8 || nHitsFit2 < 8 || nHitsDEDx1<5 || nHitsDEDx2 < 5) return false;
+    // Fill histograms
+    hNPrimTracks->Fill(nTracks);
+    hNPrimVertices->Fill(nVertices);
+    if (isTriggered) {
+        hTriggerId->Fill(fTriggerIds[0]); // Assuming only one trigger ID is used
+    }
+    hChiPiPi->Fill(chipipi2);
+    hDcaXY1->Fill(dcaXY1);
+    hDcaXY2->Fill(dcaXY2);
+    hNHitsFit1->Fill(nHitsFit1);
+    hNHitsFit2->Fill(nHitsFit2);
+    hNHitsDedx1->Fill(nHitsDEDx1);
+    hNHitsDedx2->Fill(nHitsDEDx2);
+
+    // Apply cuts
+    if (nTracks != 2) return false;
+    if (nVertices != 1) return false;
+    if (!isTriggered) return false;
+    if (chipipi2 > 20) return false;
+    if (dcaXY1 > 3 && dcaXY2 > 3) return false;
+    if (nHitsFit1 < 8 || nHitsFit2 < 8 || nHitsDEDx1 < 5 || nHitsDEDx2 < 5) return false;
 
     return true;
 }
@@ -78,30 +99,16 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
 Int_t StPairDstMaker::Make() {
     Long64_t nEntries = fChain->GetEntries();
     for (Long64_t i = 0; i < nEntries; ++i) {
-        //std::cout << "Processing entry " << i << " / " << nEntries << std::endl;
         fChain->GetEntry(i);
 
-        // Print progress every 1000 entries
-        // if (i % 1000 == 0) {
-        //     std::cout << "Processing entry " << i << " / " << nEntries << std::endl;
-        // }
-
-        //Check if the event passes the selection criteria
         if (!eventSelection(fUpcEvt)) {
             continue;
         }
 
-        //std::cout << "Event passed selection" << std::endl;
-
-        // Get the two tracks
         StUPCTrack* track1 = fUpcEvt->getTrack(0);
         StUPCTrack* track2 = fUpcEvt->getTrack(1);
 
-        // std::cout << "Got tracks" << std::endl;
-
-        // Ensure track1 is positive and track2 is negative if they have opposite charges
         if (track1->getCharge() * track2->getCharge() < 0) {
-            // std::cout << "checked charge" << std::endl;
             if (track1->getCharge() < 0) {
                 StUPCTrack* temp = track1;
                 track1 = track2;
@@ -109,12 +116,7 @@ Int_t StPairDstMaker::Make() {
             }
         }
 
-        // std::cout << "Swapped tracks" << std::endl;
-
-        // Fill FemtoPair with track information
         ResetFemtoPair();
-
-        // std::cout << "Reset FemtoPair" << std::endl;
 
         fFemtoPair.mRunID = fUpcEvt->getRunNumber();
         fFemtoPair.mVertexZ = fUpcEvt->getVertex(0)->getPosZ();
@@ -122,8 +124,6 @@ Int_t StPairDstMaker::Make() {
         fFemtoPair.mZDCEast = fUpcEvt->getZDCUnAttEast();
         fFemtoPair.mZDCWest = fUpcEvt->getZDCUnAttWest();
         fFemtoPair.mChargeSum = track1->getCharge() + track2->getCharge();
-
-        // std::cout << "Filled event information" << std::endl;
 
         fFemtoPair.d1_mPt = track1->getPt();
         fFemtoPair.d1_mEta = track1->getEta();
@@ -137,15 +137,9 @@ Int_t StPairDstMaker::Make() {
         fFemtoPair.d1_mNHitsDedx = track1->getNhitsDEdx();
         fFemtoPair.d1_mDCA = track1->getDcaXY();
         fFemtoPair.d1_mTof = track1->getTofTime();
-        double tofpathlength1  = track1->getTofPathLength();
-        if (tofpathlength1 > 0) {
-            fFemtoPair.d1_mMatchFlag = 1;
-        } else {
-            fFemtoPair.d1_mMatchFlag = 0;
-        }
+        double tofpathlength1 = track1->getTofPathLength();
+        fFemtoPair.d1_mMatchFlag = (tofpathlength1 > 0) ? 1 : 0;
         fFemtoPair.d1_mLength = tofpathlength1;
-
-        // std::cout << "Filled track 1 information" << std::endl;
 
         fFemtoPair.d2_mPt = track2->getPt();
         fFemtoPair.d2_mEta = track2->getEta();
@@ -159,15 +153,9 @@ Int_t StPairDstMaker::Make() {
         fFemtoPair.d2_mNHitsDedx = track2->getNhitsDEdx();
         fFemtoPair.d2_mDCA = track2->getDcaXY();
         fFemtoPair.d2_mTof = track2->getTofTime();
-        double tofpathlength2  = track2->getTofPathLength();
-        if (tofpathlength2 > 0) {
-            fFemtoPair.d2_mMatchFlag = 1;
-        } else {
-            fFemtoPair.d2_mMatchFlag = 0;
-        }
+        double tofpathlength2 = track2->getTofPathLength();
+        fFemtoPair.d2_mMatchFlag = (tofpathlength2 > 0) ? 1 : 0;
         fFemtoPair.d2_mLength = tofpathlength2;
-
-        // std::cout << "Filled track 2 information" << std::endl;
 
         TLorentzVector lv1, lv2, lv;
         lv1.SetPtEtaPhiM(track1->getPt(), track1->getEta(), track1->getPhi(), 0.13957039);
@@ -180,11 +168,7 @@ Int_t StPairDstMaker::Make() {
         fFemtoPair.mMass = lv.M();
         fFemtoPair.mRapidity = lv.Rapidity();
 
-        // std::cout << "Filled pair information" << std::endl;
-
         fTree->Fill();
-
-        // std::cout << "Filled tree" << std::endl;
     }
     return kStOK;
 }
@@ -192,6 +176,19 @@ Int_t StPairDstMaker::Make() {
 Int_t StPairDstMaker::Finish() {
     fOutFile->cd();
     fTree->Write();
+
+    // Write histograms
+    hTriggerId->Write();
+    hNPrimTracks->Write();
+    hNPrimVertices->Write();
+    hChiPiPi->Write();
+    hDcaXY1->Write();
+    hDcaXY2->Write();
+    hNHitsFit1->Write();
+    hNHitsFit2->Write();
+    hNHitsDedx1->Write();
+    hNHitsDedx2->Write();
+
     fOutFile->Close();
     return kStOK;
 }

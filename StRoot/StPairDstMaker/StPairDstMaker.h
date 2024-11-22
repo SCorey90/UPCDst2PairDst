@@ -3,6 +3,7 @@
 
 #include "StMaker.h"
 #include "TString.h"
+#include "TH1.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "FemtoPairFormat.h"
@@ -31,6 +32,18 @@ private:
     TFile* fOutFile;
     TTree* fTree;
     FemtoPair fFemtoPair;
+
+    // Histograms
+    TH1F* hTriggerId;
+    TH1F* hNPrimTracks;
+    TH1F* hNPrimVertices;
+    TH1F* hChiPiPi;
+    TH1F* hDcaXY1;
+    TH1F* hDcaXY2;
+    TH1F* hNHitsFit1;
+    TH1F* hNHitsFit2;
+    TH1F* hNHitsDedx1;
+    TH1F* hNHitsDedx2;
 
     TChain* fChain;
     StUPCEvent* fUpcEvt;
