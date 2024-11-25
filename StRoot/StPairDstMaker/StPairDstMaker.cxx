@@ -27,7 +27,7 @@ Int_t StPairDstMaker::Init() {
     fTree->Branch("Pairs", &fFemtoPair);
 
     // Create histograms
-    hTriggerId = new TH1F("hTriggerId", "Trigger ID", 10, 450700, 450710);
+    hTriggerId = new TH1F("hTriggerId", "Trigger ID", 1000, 450000, 451000);
     hNPrimTracks = new TH1F("hNPrimTracks", "Number of Primary Tracks", 10, 0, 10);
     hNPrimVertices = new TH1F("hNPrimVertices", "Number of Primary Vertices", 10, 0, 10);
     hChiPiPi = new TH1F("hChiPiPi", "Chi^2 of Pion Hypothesis", 100, 0, 50);
@@ -73,9 +73,9 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
 
     // Fill histograms
     hNPrimTracks->Fill(nTracks);
-    hNPrimVertices->Fill(nVertices);
-    if (isTriggered) {
-        hTriggerId->Fill(fTriggerIds[0]); // Assuming only one trigger ID is used
+    //hNPrimVertices->Fill(nVertices);
+    for (int i = 0; i < fTriggerIds.size(); ++i) {
+        hTriggerId->Fill(fTriggerIds[i]);
     }
     // hChiPiPi->Fill(chipipi2);
     // hDcaXY1->Fill(dcaXY1);
@@ -90,6 +90,7 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     // if (nVertices != 1) return false;
     if (!isTriggered) return false;
 
+    hNPrimVertices->Fill(nVertices);
     hChiPiPi->Fill(chipipi2);
     hDcaXY1->Fill(dcaXY1);
     hDcaXY2->Fill(dcaXY2);
