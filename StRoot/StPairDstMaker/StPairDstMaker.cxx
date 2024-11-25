@@ -77,6 +77,19 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     if (isTriggered) {
         hTriggerId->Fill(fTriggerIds[0]); // Assuming only one trigger ID is used
     }
+    // hChiPiPi->Fill(chipipi2);
+    // hDcaXY1->Fill(dcaXY1);
+    // hDcaXY2->Fill(dcaXY2);
+    // hNHitsFit1->Fill(nHitsFit1);
+    // hNHitsFit2->Fill(nHitsFit2);
+    // hNHitsDedx1->Fill(nHitsDEDx1);
+    // hNHitsDedx2->Fill(nHitsDEDx2);
+
+    // Apply cuts
+    if (nTracks != 2) return false;
+    // if (nVertices != 1) return false;
+    if (!isTriggered) return false;
+
     hChiPiPi->Fill(chipipi2);
     hDcaXY1->Fill(dcaXY1);
     hDcaXY2->Fill(dcaXY2);
@@ -85,10 +98,6 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     hNHitsDedx1->Fill(nHitsDEDx1);
     hNHitsDedx2->Fill(nHitsDEDx2);
 
-    // Apply cuts
-    if (nTracks != 2) return false;
-    // if (nVertices != 1) return false;
-    if (!isTriggered) return false;
     if (chipipi2 > 20) return false;
     if (dcaXY1 > 3 && dcaXY2 > 3) return false;
     if (nHitsFit1 < 8 || nHitsFit2 < 8 || nHitsDEDx1 < 5 || nHitsDEDx2 < 5) return false;
