@@ -35,6 +35,7 @@ private:
 
     // Histograms
     TH1F* hTriggerId;
+    TH1F* hNPrimTracksPreCut;
     TH1F* hNPrimTracks;
     TH1F* hNPrimVertices;
     TH1F* hChiPiPi;

@@ -28,6 +28,7 @@ Int_t StPairDstMaker::Init() {
 
     // Create histograms
     hTriggerId = new TH1F("hTriggerId", "Trigger ID", 1000, 450000, 451000);
+    hNPrimTracksPreCut = new TH1F("hNPrimTracksPreCut", "Number of Primary Tracks", 10, 0, 10);
     hNPrimTracks = new TH1F("hNPrimTracks", "Number of Primary Tracks", 10, 0, 10);
     hNPrimVertices = new TH1F("hNPrimVertices", "Number of Primary Vertices", 10, 0, 10);
     hChiPiPi = new TH1F("hChiPiPi", "Chi^2 of Pion Hypothesis", 100, 0, 50);
@@ -90,6 +91,7 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     for (int i = 0; i < fTriggerIds.size(); ++i) {
         hTriggerId->Fill(fTriggerIds[i]);
     }
+    hNPrimTracksPreCut->Fill(nTracks);
     if (nTracks != 2) return false;
     hNPrimTracks->Fill(nTracks);
     // if (nVertices != 1) return false
