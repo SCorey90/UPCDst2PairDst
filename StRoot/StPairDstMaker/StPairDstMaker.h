@@ -1,7 +1,7 @@
 #ifndef ST_PAIR_DST_MAKER_H
 #define ST_PAIR_DST_MAKER_H
 
-#include "RtypesCore.h"
+#include "Rtypes.h"
 #include "StMaker.h"
 #include "TString.h"
 #include "TH1.h"
