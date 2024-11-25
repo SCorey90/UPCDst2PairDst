@@ -72,11 +72,11 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     int nHitsDEDx2 = track2->getNhitsDEdx();
 
     // Fill histograms
-    hNPrimTracks->Fill(nTracks);
-    //hNPrimVertices->Fill(nVertices);
-    for (int i = 0; i < fTriggerIds.size(); ++i) {
-        hTriggerId->Fill(fTriggerIds[i]);
-    }
+    // hNPrimTracks->Fill(nTracks);
+    // hNPrimVertices->Fill(nVertices);
+    // for (int i = 0; i < fTriggerIds.size(); ++i) {
+    //     hTriggerId->Fill(fTriggerIds[i]);
+    // }
     // hChiPiPi->Fill(chipipi2);
     // hDcaXY1->Fill(dcaXY1);
     // hDcaXY2->Fill(dcaXY2);
@@ -89,8 +89,15 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     if (nTracks != 2) return false;
     // if (nVertices != 1) return false;
     if (!isTriggered) return false;
+    if (chipipi2 > 20) return false;
+    if (dcaXY1 > 3 && dcaXY2 > 3) return false;
+    if (nHitsFit1 < 8 || nHitsFit2 < 8 || nHitsDEDx1 < 5 || nHitsDEDx2 < 5) return false;
 
+    hNPrimTracks->Fill(nTracks);
     hNPrimVertices->Fill(nVertices);
+    for (int i = 0; i < fTriggerIds.size(); ++i) {
+        hTriggerId->Fill(fTriggerIds[i]);
+    }
     hChiPiPi->Fill(chipipi2);
     hDcaXY1->Fill(dcaXY1);
     hDcaXY2->Fill(dcaXY2);
@@ -98,10 +105,6 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     hNHitsFit2->Fill(nHitsFit2);
     hNHitsDedx1->Fill(nHitsDEDx1);
     hNHitsDedx2->Fill(nHitsDEDx2);
-
-    if (chipipi2 > 20) return false;
-    if (dcaXY1 > 3 && dcaXY2 > 3) return false;
-    if (nHitsFit1 < 8 || nHitsFit2 < 8 || nHitsDEDx1 < 5 || nHitsDEDx2 < 5) return false;
 
     return true;
 }
