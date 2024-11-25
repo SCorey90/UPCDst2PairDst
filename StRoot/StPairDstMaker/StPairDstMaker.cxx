@@ -87,7 +87,7 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
 
     // Apply cuts
     if (nTracks != 2) return false;
-    if (nVertices != 1) return false;
+    // if (nVertices != 1) return false;
     if (!isTriggered) return false;
     if (chipipi2 > 20) return false;
     if (dcaXY1 > 3 && dcaXY2 > 3) return false;
