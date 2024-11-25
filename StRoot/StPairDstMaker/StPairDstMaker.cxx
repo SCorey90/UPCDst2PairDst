@@ -194,6 +194,7 @@ Int_t StPairDstMaker::Finish() {
 
     // Write histograms
     hTriggerId->Write();
+    hNPrimTracksPreCut->Write();
     hNPrimTracks->Write();
     hNPrimVertices->Write();
     hChiPiPi->Write();
