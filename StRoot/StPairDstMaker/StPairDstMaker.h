@@ -1,6 +1,7 @@
 #ifndef ST_PAIR_DST_MAKER_H
 #define ST_PAIR_DST_MAKER_H
 
+#include "RtypesCore.h"
 #include "StMaker.h"
 #include "TString.h"
 #include "TH1.h"
@@ -32,6 +33,13 @@ private:
     TFile* fOutFile;
     TTree* fTree;
     FemtoPair fFemtoPair;
+
+    // ints
+    Long64_t fTotalEvents;
+    Long64_t fPassTrigger;
+    Long64_t fPassNTracks;
+    Long64_t fPassVertex;
+    Long64_t fPassPID;
 
     // Histograms
     TH1F* hTriggerId;

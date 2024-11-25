@@ -13,7 +13,7 @@
 
 ClassImp(StPairDstMaker)
 
-StPairDstMaker::StPairDstMaker(const char* name) : StMaker(name), fOutFile(nullptr), fTree(nullptr), fChain(new TChain("mUPCTree")), fUpcEvt(nullptr), fTriggerIds({-1}) {
+StPairDstMaker::StPairDstMaker(const char* name) : StMaker(name), fOutFile(nullptr), fTree(nullptr), fChain(new TChain("mUPCTree")), fUpcEvt(nullptr), fTriggerIds({-1}), fTotalEvents(0), fPassTrigger(0), fPassNTracks(0), fPassVertex(0), fPassPID(0), fOutputFile("PairDst.root") {
 }
 
 StPairDstMaker::~StPairDstMaker() {
@@ -60,6 +60,8 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
 
     if (!track1 || !track2) return false;
 
+    fTotalEvents++;
+
     double nSigmaPi1 = track1->getNSigmasTPCPion();
     double nSigmaPi2 = track2->getNSigmasTPCPion();
     double chipipi2 = nSigmaPi1 * nSigmaPi1 + nSigmaPi2 * nSigmaPi2;
@@ -91,22 +93,29 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     for (int i = 0; i < fTriggerIds.size(); ++i) {
         hTriggerId->Fill(fTriggerIds[i]);
     }
+    fPassTrigger++;
+
     hNPrimTracksPreCut->Fill(nTracks);
     if (nTracks != 2) return false;
     hNPrimTracks->Fill(nTracks);
+    fPassNTracks++;
+
     // if (nVertices != 1) return false
+    fPassVertex++;
+
     if (chipipi2 > 20) return false;
     if (dcaXY1 > 3 && dcaXY2 > 3) return false;
     if (nHitsFit1 < 8 || nHitsFit2 < 8 || nHitsDEDx1 < 5 || nHitsDEDx2 < 5) return false;
 
     hNPrimVertices->Fill(nVertices);
-    // hChiPiPi->Fill(chipipi2);
-    // hDcaXY1->Fill(dcaXY1);
-    // hDcaXY2->Fill(dcaXY2);
-    // hNHitsFit1->Fill(nHitsFit1);
-    // hNHitsFit2->Fill(nHitsFit2);
-    // hNHitsDedx1->Fill(nHitsDEDx1);
-    // hNHitsDedx2->Fill(nHitsDEDx2);
+    hChiPiPi->Fill(chipipi2);
+    hDcaXY1->Fill(dcaXY1);
+    hDcaXY2->Fill(dcaXY2);
+    hNHitsFit1->Fill(nHitsFit1);
+    hNHitsFit2->Fill(nHitsFit2);
+    hNHitsDedx1->Fill(nHitsDEDx1);
+    hNHitsDedx2->Fill(nHitsDEDx2);
+    fPassPID++;
 
     return true;
 }
@@ -204,6 +213,16 @@ Int_t StPairDstMaker::Finish() {
     hNHitsFit2->Write();
     hNHitsDedx1->Write();
     hNHitsDedx2->Write();
+
+    TTree* counterTree = new TTree("Counters", "Counters");
+    counterTree->Branch("TotalEvents", &fTotalEvents, "TotalEvents/L");
+    counterTree->Branch("PassTrigger", &fPassTrigger, "PassTrigger/L");
+    counterTree->Branch("PassNTracks", &fPassNTracks, "PassNTracks/L");
+    counterTree->Branch("PassVertex", &fPassVertex, "PassVertex/L");
+    counterTree->Branch("PassPID", &fPassPID, "PassPID/L");
+    counterTree->Fill();
+    counterTree->Write();
+    delete counterTree;
 
     fOutFile->Close();
     return kStOK;
