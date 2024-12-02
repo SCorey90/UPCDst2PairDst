@@ -3,8 +3,8 @@
     <stdout URL="file:/star/u/corey90/star/UPCDst2PairDst/logs/log_$JOBID.log"/>
     <stderr URL="file:/star/u/corey90/star/UPCDst2PairDst/logs/err_$JOBID.err"/>
 
-    <output fromScratch="*.root" toURL="file:/star/u/corey90/star/UPCDst2PairDst/outputs/"/>
-    <input URL="filelist:/star/u/corey90/star/UPCDst2PairDst/mid14.lis" nFiles="all"/>
+    <output fromScratch="*.root" toURL="file:/star/u/corey90/star/UPCDst2PairDst/outputs/run14high"/>
+    <input URL="filelist:/star/u/corey90/star/UPCDst2PairDst/high14.lis" nFiles="all"/>
 
     <command>
          <![CDATA[

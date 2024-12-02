@@ -91,7 +91,9 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     // Apply cuts
     if (!isTriggered) return false;
     for (int i = 0; i < fTriggerIds.size(); ++i) {
-        hTriggerId->Fill(fTriggerIds[i]);
+        if (evt->isTrigger(fTriggerIds[i])) {
+            hTriggerId->Fill(fTriggerIds[i]);
+        }
     }
     fPassTrigger++;
 
