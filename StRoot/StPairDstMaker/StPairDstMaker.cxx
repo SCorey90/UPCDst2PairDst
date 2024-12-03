@@ -221,6 +221,8 @@ Int_t StPairDstMaker::Finish() {
     fTree->Write();
 
     // Write histograms
+    hEventCounter->Write();
+
     hTriggerId->Write();
     hNPrimTracksPreCut->Write();
     hNPrimTracks->Write();

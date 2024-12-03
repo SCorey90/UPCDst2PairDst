@@ -3,7 +3,7 @@
     <stdout URL="file:/star/u/corey90/star/UPCDst2PairDst/logs/log_$JOBID.log"/>
     <stderr URL="file:/star/u/corey90/star/UPCDst2PairDst/logs/err_$JOBID.err"/>
 
-    <output fromScratch="*.root" toURL="file:/star/u/corey90/star/UPCDst2PairDst/outputs/run14mid"/>
+    <output fromScratch="*.root" toURL="file:/star/u/corey90/star/UPCDst2PairDst/outputs/run14mid/"/>
     <input URL="filelist:/star/u/corey90/star/UPCDst2PairDst/mid14.lis" nFiles="all"/>
 
     <command>
