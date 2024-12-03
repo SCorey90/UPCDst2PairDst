@@ -28,7 +28,7 @@ Int_t StPairDstMaker::Init() {
     fTree->Branch("Pairs", &fFemtoPair);
 
     // Create histograms
-    hEventCounter = new TH1F("hEventCounter", "Event Selection", 0, 4, 4);
+    hEventCounter = new TH1F("hEventCounter", "Event Selection", 4, 0, 4);
     hEventCounter->GetXaxis()->SetBinLabel(1, "Total Events");
     hEventCounter->GetXaxis()->SetBinLabel(2, "Trigger");
     hEventCounter->GetXaxis()->SetBinLabel(3, "NTracks=2");
