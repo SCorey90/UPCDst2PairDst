@@ -9,6 +9,7 @@
 #include "TTree.h"
 #include "FemtoPairFormat.h"
 #include "../StUpcDst/StUPCEvent.h"
+#include <map>
 
 class StPairDstMaker : public StMaker {
 public:
@@ -42,6 +43,8 @@ private:
     Long64_t fPassPID;
 
     // Histograms
+    TH1F* hEventCounter;
+
     TH1F* hTriggerId;
     TH1F* hNPrimTracksPreCut;
     TH1F* hNPrimTracks;

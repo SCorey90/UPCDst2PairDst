@@ -9,6 +9,7 @@
 #include "TString.h"
 #include "TH1F.h"
 #include <iostream>
+#include <map>
 #include <utility>
 
 ClassImp(StPairDstMaker)
@@ -27,6 +28,12 @@ Int_t StPairDstMaker::Init() {
     fTree->Branch("Pairs", &fFemtoPair);
 
     // Create histograms
+    hEventCounter = new TH1F("hEventCounter", "Event Selection", 0, 4, 4);
+    hEventCounter->GetXaxis()->SetBinLabel(1, "Total Events");
+    hEventCounter->GetXaxis()->SetBinLabel(2, "Trigger");
+    hEventCounter->GetXaxis()->SetBinLabel(3, "NTracks=2");
+    hEventCounter->GetXaxis()->SetBinLabel(4, "PID");
+
     hTriggerId = new TH1F("hTriggerId", "Trigger ID", 1000, 450000, 451000);
     hNPrimTracksPreCut = new TH1F("hNPrimTracksPreCut", "Number of Primary Tracks", 10, 0, 10);
     hNPrimTracks = new TH1F("hNPrimTracks", "Number of Primary Tracks", 10, 0, 10);
@@ -45,9 +52,13 @@ Int_t StPairDstMaker::Init() {
 bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     if (!evt) return false;
 
+    fTotalEvents++; //iterate total events
+
     int nTracks = evt->getNPrimTracks();
     int nVertices = evt->getNPrimVertices();
     bool isTriggered = false;
+
+    // Check trigger
     for (int i = 0; i < fTriggerIds.size(); ++i) {
         if (evt->isTrigger(fTriggerIds[i])) {
             isTriggered = true;
@@ -55,12 +66,38 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
         }
     }
 
+    if (!isTriggered) return false;
+    for (int i = 0; i < fTriggerIds.size(); ++i) {
+        if (evt->isTrigger(fTriggerIds[i])) {
+            hTriggerId->Fill(fTriggerIds[i]);
+        }
+    }
+
+    fPassTrigger++; //iterate triggered events when one passes the trigger
+
+    hNPrimVertices->Fill(nVertices);
+    hNPrimTracksPreCut->Fill(nTracks);
+
+    // Check nTracks
+    std::map<StUPCTrack*, int> track2vertex;
+    for (int i=0; i<nTracks; i++) {
+        StUPCTrack* track = evt->getTrack(i);
+        if (!track) continue;
+        StUPCVertex* vertex = track->getVertex();
+        if (!vertex) continue;
+        track2vertex[track] = vertex->getId();
+    }
+
+    if (nTracks != 2) return false;
+    hNPrimTracks->Fill(nTracks);
+
+    fPassNTracks++; //iterate events with 2 tracks
+
+    //Get Tracks
     StUPCTrack* track1 = evt->getTrack(0);
     StUPCTrack* track2 = evt->getTrack(1);
 
     if (!track1 || !track2) return false;
-
-    fTotalEvents++;
 
     double nSigmaPi1 = track1->getNSigmasTPCPion();
     double nSigmaPi2 = track2->getNSigmasTPCPion();
@@ -74,12 +111,9 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     int nHitsDEDx1 = track1->getNhitsDEdx();
     int nHitsDEDx2 = track2->getNhitsDEdx();
 
-    // Fill histograms
-    // hNPrimTracks->Fill(nTracks);
-    // hNPrimVertices->Fill(nVertices);
-    // for (int i = 0; i < fTriggerIds.size(); ++i) {
-    //     hTriggerId->Fill(fTriggerIds[i]);
-    // }
+    // if (nVertices != 1) return false
+    // fPassVertex++;
+
     hChiPiPi->Fill(chipipi2);
     hDcaXY1->Fill(dcaXY1);
     hDcaXY2->Fill(dcaXY2);
@@ -87,36 +121,13 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     hNHitsFit2->Fill(nHitsFit2);
     hNHitsDedx1->Fill(nHitsDEDx1);
     hNHitsDedx2->Fill(nHitsDEDx2);
-
-    // Apply cuts
-    if (!isTriggered) return false;
-    for (int i = 0; i < fTriggerIds.size(); ++i) {
-        if (evt->isTrigger(fTriggerIds[i])) {
-            hTriggerId->Fill(fTriggerIds[i]);
-        }
-    }
-    fPassTrigger++;
-
-    hNPrimTracksPreCut->Fill(nTracks);
-    if (nTracks != 2) return false;
-    hNPrimTracks->Fill(nTracks);
-    fPassNTracks++;
-
-    // if (nVertices != 1) return false
-    fPassVertex++;
 
     if (chipipi2 > 20) return false;
+
     if (dcaXY1 > 3 && dcaXY2 > 3) return false;
+
     if (nHitsFit1 < 8 || nHitsFit2 < 8 || nHitsDEDx1 < 5 || nHitsDEDx2 < 5) return false;
 
-    hNPrimVertices->Fill(nVertices);
-    hChiPiPi->Fill(chipipi2);
-    hDcaXY1->Fill(dcaXY1);
-    hDcaXY2->Fill(dcaXY2);
-    hNHitsFit1->Fill(nHitsFit1);
-    hNHitsFit2->Fill(nHitsFit2);
-    hNHitsDedx1->Fill(nHitsDEDx1);
-    hNHitsDedx2->Fill(nHitsDEDx2);
     fPassPID++;
 
     return true;
@@ -196,6 +207,12 @@ Int_t StPairDstMaker::Make() {
 
         fTree->Fill();
     }
+
+    hEventCounter->SetBinContent(1, fTotalEvents);
+    hEventCounter->SetBinContent(2, fPassTrigger);
+    hEventCounter->SetBinContent(3, fPassNTracks);
+    hEventCounter->SetBinContent(4, fPassPID);
+
     return kStOK;
 }
 
