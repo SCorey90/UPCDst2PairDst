@@ -21,6 +21,7 @@ public:
     virtual Int_t Finish();
 
     bool eventSelection(StUPCEvent* evt);
+    bool trackSelection(StUPCTrack* track1, StUPCTrack* track2);
 
     void SetInputFileList(const char* fileList);
     void SetInputFile(const char* file) { fInputFile = file; }

@@ -49,15 +49,15 @@ Int_t StPairDstMaker::Init() {
     return kStOK;
 }
 
-bool StPairDstMaker::eventSelection(StUPCEvent* evt){
+bool StPairDstMaker::eventSelection(StUPCEvent *evt){
     if (!evt) return false;
 
     fTotalEvents++; //iterate total events
 
     int nTracks = evt->getNPrimTracks();
     int nVertices = evt->getNPrimVertices();
-    // bool isTriggered = false;
-    bool isTriggered = true;
+    bool isTriggered = false;
+    // bool isTriggered = true;
 
     // Check trigger
     for (int i = 0; i < fTriggerIds.size(); ++i) {
@@ -79,25 +79,10 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     hNPrimVertices->Fill(nVertices);
     hNPrimTracksPreCut->Fill(nTracks);
 
-    // Check nTracks
-    std::map<StUPCTrack*, int> track2vertex;
-    for (int i=0; i<nTracks; i++) {
-        StUPCTrack* track = evt->getTrack(i);
-        if (!track) continue;
-        StUPCVertex* vertex = track->getVertex();
-        if (!vertex) continue;
-        track2vertex[track] = vertex->getId();
-    }
+    return true;
+}
 
-    if (nTracks != 2) return false;
-    hNPrimTracks->Fill(nTracks);
-
-    fPassNTracks++; //iterate events with 2 tracks
-
-    //Get Tracks
-    StUPCTrack* track1 = evt->getTrack(0);
-    StUPCTrack* track2 = evt->getTrack(1);
-
+bool StPairDstMaker::trackSelection(StUPCTrack* track1, StUPCTrack* track2) {
     if (!track1 || !track2) return false;
 
     double nSigmaPi1 = track1->getNSigmasTPCPion();
@@ -111,9 +96,6 @@ bool StPairDstMaker::eventSelection(StUPCEvent* evt){
     int nHitsFit2 = track2->getNhitsFit();
     int nHitsDEDx1 = track1->getNhitsDEdx();
     int nHitsDEDx2 = track2->getNhitsDEdx();
-
-    // if (nVertices != 1) return false
-    // fPassVertex++;
 
     hChiPiPi->Fill(chipipi2);
     hDcaXY1->Fill(dcaXY1);
@@ -139,74 +121,99 @@ Int_t StPairDstMaker::Make() {
     for (Long64_t i = 0; i < nEntries; ++i) {
         fChain->GetEntry(i);
 
+        int nTracks = fUpcEvt->getNPrimTracks();
+        std::map<int, std::vector<StUPCTrack*>> trackByVertex;
+        for (int j=0; j<nTracks; j++) {
+            StUPCTrack* track = fUpcEvt->getTrack(j);
+            if (!track) continue;
+            StUPCVertex* vertex = track->getVertex();
+            if (!vertex) continue;
+            trackByVertex[vertex->getId()].push_back(track);
+        }
+
+        int nVertices = fUpcEvt->getNPrimVertices();
+
         if (!eventSelection(fUpcEvt)) {
             continue;
         }
 
-        StUPCTrack* track1 = fUpcEvt->getTrack(0);
-        StUPCTrack* track2 = fUpcEvt->getTrack(1);
+        for (int j=0; j<nVertices; j++) {
+            StUPCVertex* vertex = fUpcEvt->getVertex(j);
+            if (!vertex) continue;
+            if (trackByVertex.find(vertex->getId()) == trackByVertex.end()) continue;
+            if (trackByVertex[vertex->getId()].size() != 2) continue;
+            fPassNTracks++;
 
-        if (track1->getCharge() * track2->getCharge() < 0) {
-            if (track1->getCharge() < 0) {
-                StUPCTrack* temp = track1;
-                track1 = track2;
-                track2 = temp;
+            StUPCTrack* track1 = trackByVertex[vertex->getId()][0];
+            StUPCTrack* track2 = trackByVertex[vertex->getId()][1];
+
+            if ( !trackSelection(track1, track2) ) {
+                continue;
             }
+            fPassPID++;
+
+            if (track1->getCharge() * track2->getCharge() < 0) {
+                if (track1->getCharge() < 0) {
+                    StUPCTrack* temp = track1;
+                    track1 = track2;
+                    track2 = temp;
+                }
+            }
+
+            ResetFemtoPair();
+
+            fFemtoPair.mRunID = fUpcEvt->getRunNumber();
+            fFemtoPair.mVertexZ = fUpcEvt->getVertex(0)->getPosZ();
+            fFemtoPair.mGRefMult = fUpcEvt->getNGlobTracks();
+            fFemtoPair.mZDCEast = fUpcEvt->getZDCUnAttEast();
+            fFemtoPair.mZDCWest = fUpcEvt->getZDCUnAttWest();
+            fFemtoPair.mChargeSum = track1->getCharge() + track2->getCharge();
+
+            fFemtoPair.d1_mPt = track1->getPt();
+            fFemtoPair.d1_mEta = track1->getEta();
+            fFemtoPair.d1_mPhi = track1->getPhi();
+            fFemtoPair.d1_mNSigmaPion = track1->getNSigmasTPCPion();
+            fFemtoPair.d1_mNSigmaKaon = track1->getNSigmasTPCKaon();
+            fFemtoPair.d1_mNSigmaProton = track1->getNSigmasTPCProton();
+            fFemtoPair.d1_mNSigmaElectron = track1->getNSigmasTPCElectron();
+            fFemtoPair.d1_mNHitsFit = track1->getNhitsFit();
+            fFemtoPair.d1_mNHitsMax = track1->getNhitsMax();
+            fFemtoPair.d1_mNHitsDedx = track1->getNhitsDEdx();
+            fFemtoPair.d1_mDCA = track1->getDcaXY();
+            fFemtoPair.d1_mTof = track1->getTofTime();
+            double tofpathlength1 = track1->getTofPathLength();
+            fFemtoPair.d1_mMatchFlag = (tofpathlength1 > 0) ? 1 : 0;
+            fFemtoPair.d1_mLength = tofpathlength1;
+
+            fFemtoPair.d2_mPt = track2->getPt();
+            fFemtoPair.d2_mEta = track2->getEta();
+            fFemtoPair.d2_mPhi = track2->getPhi();
+            fFemtoPair.d2_mNSigmaPion = track2->getNSigmasTPCPion();
+            fFemtoPair.d2_mNSigmaKaon = track2->getNSigmasTPCKaon();
+            fFemtoPair.d2_mNSigmaProton = track2->getNSigmasTPCProton();
+            fFemtoPair.d2_mNSigmaElectron = track2->getNSigmasTPCElectron();
+            fFemtoPair.d2_mNHitsFit = track2->getNhitsFit();
+            fFemtoPair.d2_mNHitsMax = track2->getNhitsMax();
+            fFemtoPair.d2_mNHitsDedx = track2->getNhitsDEdx();
+            fFemtoPair.d2_mDCA = track2->getDcaXY();
+            fFemtoPair.d2_mTof = track2->getTofTime();
+            double tofpathlength2 = track2->getTofPathLength();
+            fFemtoPair.d2_mMatchFlag = (tofpathlength2 > 0) ? 1 : 0;
+            fFemtoPair.d2_mLength = tofpathlength2;
+
+            TLorentzVector lv1, lv2, lv;
+            lv1.SetPtEtaPhiM(track1->getPt(), track1->getEta(), track1->getPhi(), 0.13957039);
+            lv2.SetPtEtaPhiM(track2->getPt(), track2->getEta(), track2->getPhi(), 0.13957039);
+            lv = lv1 + lv2;
+
+            fFemtoPair.mPt = lv.Pt();
+            fFemtoPair.mEta = lv.Eta();
+            fFemtoPair.mPhi = lv.Phi();
+            fFemtoPair.mMass = lv.M();
+            fFemtoPair.mRapidity = lv.Rapidity();
+
+            fTree->Fill();
         }
-
-        ResetFemtoPair();
-
-        fFemtoPair.mRunID = fUpcEvt->getRunNumber();
-        fFemtoPair.mVertexZ = fUpcEvt->getVertex(0)->getPosZ();
-        fFemtoPair.mGRefMult = fUpcEvt->getNGlobTracks();
-        fFemtoPair.mZDCEast = fUpcEvt->getZDCUnAttEast();
-        fFemtoPair.mZDCWest = fUpcEvt->getZDCUnAttWest();
-        fFemtoPair.mChargeSum = track1->getCharge() + track2->getCharge();
-
-        fFemtoPair.d1_mPt = track1->getPt();
-        fFemtoPair.d1_mEta = track1->getEta();
-        fFemtoPair.d1_mPhi = track1->getPhi();
-        fFemtoPair.d1_mNSigmaPion = track1->getNSigmasTPCPion();
-        fFemtoPair.d1_mNSigmaKaon = track1->getNSigmasTPCKaon();
-        fFemtoPair.d1_mNSigmaProton = track1->getNSigmasTPCProton();
-        fFemtoPair.d1_mNSigmaElectron = track1->getNSigmasTPCElectron();
-        fFemtoPair.d1_mNHitsFit = track1->getNhitsFit();
-        fFemtoPair.d1_mNHitsMax = track1->getNhitsMax();
-        fFemtoPair.d1_mNHitsDedx = track1->getNhitsDEdx();
-        fFemtoPair.d1_mDCA = track1->getDcaXY();
-        fFemtoPair.d1_mTof = track1->getTofTime();
-        double tofpathlength1 = track1->getTofPathLength();
-        fFemtoPair.d1_mMatchFlag = (tofpathlength1 > 0) ? 1 : 0;
-        fFemtoPair.d1_mLength = tofpathlength1;
-
-        fFemtoPair.d2_mPt = track2->getPt();
-        fFemtoPair.d2_mEta = track2->getEta();
-        fFemtoPair.d2_mPhi = track2->getPhi();
-        fFemtoPair.d2_mNSigmaPion = track2->getNSigmasTPCPion();
-        fFemtoPair.d2_mNSigmaKaon = track2->getNSigmasTPCKaon();
-        fFemtoPair.d2_mNSigmaProton = track2->getNSigmasTPCProton();
-        fFemtoPair.d2_mNSigmaElectron = track2->getNSigmasTPCElectron();
-        fFemtoPair.d2_mNHitsFit = track2->getNhitsFit();
-        fFemtoPair.d2_mNHitsMax = track2->getNhitsMax();
-        fFemtoPair.d2_mNHitsDedx = track2->getNhitsDEdx();
-        fFemtoPair.d2_mDCA = track2->getDcaXY();
-        fFemtoPair.d2_mTof = track2->getTofTime();
-        double tofpathlength2 = track2->getTofPathLength();
-        fFemtoPair.d2_mMatchFlag = (tofpathlength2 > 0) ? 1 : 0;
-        fFemtoPair.d2_mLength = tofpathlength2;
-
-        TLorentzVector lv1, lv2, lv;
-        lv1.SetPtEtaPhiM(track1->getPt(), track1->getEta(), track1->getPhi(), 0.13957039);
-        lv2.SetPtEtaPhiM(track2->getPt(), track2->getEta(), track2->getPhi(), 0.13957039);
-        lv = lv1 + lv2;
-
-        fFemtoPair.mPt = lv.Pt();
-        fFemtoPair.mEta = lv.Eta();
-        fFemtoPair.mPhi = lv.Phi();
-        fFemtoPair.mMass = lv.M();
-        fFemtoPair.mRapidity = lv.Rapidity();
-
-        fTree->Fill();
     }
 
     hEventCounter->SetBinContent(1, fTotalEvents);
