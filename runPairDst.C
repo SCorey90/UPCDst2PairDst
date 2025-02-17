@@ -54,6 +54,10 @@ void runPairDst(const char* inputFileList = "mid14.lis", const char* outputFileN
     triggers.push_back(450701);
     triggers.push_back(450711);
 
+    triggers.push_back(450707);
+    triggers.push_back(450717);
+    trigger.push_back(450727);
+
     //run10 triggers
     //triggers.push_back(260750);
 

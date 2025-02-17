@@ -150,7 +150,6 @@ Int_t StPairDstMaker::Make() {
             if ( !trackSelection(track1, track2) ) {
                 continue;
             }
-            fPassPID++;
 
             if (track1->getCharge() * track2->getCharge() < 0) {
                 if (track1->getCharge() < 0) {
