@@ -105,11 +105,11 @@ bool StPairDstMaker::trackSelection(StUPCTrack* track1, StUPCTrack* track2) {
     hNHitsDedx1->Fill(nHitsDEDx1);
     hNHitsDedx2->Fill(nHitsDEDx2);
 
-    if (chipipi2 > 20) return false;
+    // if (chipipi2 > 20) return false;
 
     if (dcaXY1 > 3 && dcaXY2 > 3) return false;
 
-    if (nHitsFit1 < 8 || nHitsFit2 < 8 || nHitsDEDx1 < 5 || nHitsDEDx2 < 5) return false;
+    // if (nHitsFit1 < 8 || nHitsFit2 < 8 || nHitsDEDx1 < 5 || nHitsDEDx2 < 5) return false;
 
     fPassPID++;
 
