@@ -51,8 +51,8 @@ void runPairDst(const char* inputFileList = "mid14.lis", const char* outputFileN
     std::vector<Int_t> triggers;
 
     //run14 triggers
-    triggers.push_back(450701); //upc main
-    triggers.push_back(450711);
+    // triggers.push_back(450701); //upc main
+    // triggers.push_back(450711);
 
     // triggers.push_back(450707); //upc main p
     // triggers.push_back(450717);
@@ -60,6 +60,10 @@ void runPairDst(const char* inputFileList = "mid14.lis", const char* outputFileN
 
     //run10 triggers
     //triggers.push_back(260750);
+
+    //run21 triggers
+    triggers.push_back(860702); //upc inclusive,3m events
+    triggers.push_back(860701); //upc single zdc, 13m events
 
     mk->SetTriggerIds(triggers);  // Set the desired trigger ID
 
