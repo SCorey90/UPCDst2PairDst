@@ -162,7 +162,7 @@ Int_t StPairDstMaker::Make() {
 
             ResetFemtoPair();
 
-            double nVertexX = fUpcEvt->getVertex(0)->getPosX()
+            double nVertexX = fUpcEvt->getVertex(0)->getPosX();
             double nVertexY = fUpcEvt->getVertex(0)->getPosY();
             double nVertexR = sqrt(nVertexX * nVertexX + nVertexY * nVertexY);
             hVertexR->Fill(nVertexR);
