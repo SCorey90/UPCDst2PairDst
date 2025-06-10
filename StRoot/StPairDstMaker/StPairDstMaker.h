@@ -57,6 +57,7 @@ private:
     TH1F* hNHitsFit2;
     TH1F* hNHitsDedx1;
     TH1F* hNHitsDedx2;
+    TH1F* hVertexR;
 
     TChain* fChain;
     StUPCEvent* fUpcEvt;
