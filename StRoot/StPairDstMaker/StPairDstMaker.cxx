@@ -45,6 +45,7 @@ Int_t StPairDstMaker::Init() {
     hNHitsFit2 = new TH1F("hNHitsFit2", "Number of Hits Fit for Track 2", 50, 0, 50);
     hNHitsDedx1 = new TH1F("hNHitsDedx1", "Number of Hits dE/dx for Track 1", 50, 0, 50);
     hNHitsDedx2 = new TH1F("hNHitsDedx2", "Number of Hits dE/dx for Track 2", 50, 0, 50);
+    hVertexR = new TH1F("hVertexR", "Vertex R", 100, 0, 10);
 
     return kStOK;
 }
@@ -160,6 +161,13 @@ Int_t StPairDstMaker::Make() {
             }
 
             ResetFemtoPair();
+
+            double nVertexX = fUpcEvt->getVertex(0)->getPosX()
+            double nVertexY = fUpcEvt->getVertex(0)->getPosY();
+            double nVertexR = sqrt(nVertexX * nVertexX + nVertexY * nVertexY);
+            hVertexR->Fill(nVertexR);
+
+            if (nVertexR > 2.0) continue; // Vertex R cut
 
             fFemtoPair.mRunID = fUpcEvt->getRunNumber();
             fFemtoPair.mVertexZ = fUpcEvt->getVertex(0)->getPosZ();
