@@ -249,6 +249,7 @@ Int_t StPairDstMaker::Finish() {
     hNHitsFit2->Write();
     hNHitsDedx1->Write();
     hNHitsDedx2->Write();
+    hVertexR->Write();
 
     TTree* counterTree = new TTree("Counters", "Counters");
     counterTree->Branch("TotalEvents", &fTotalEvents, "TotalEvents/L");
