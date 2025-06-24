@@ -35,6 +35,9 @@ Int_t StPairDstMaker::Init() {
     hEventCounter->GetXaxis()->SetBinLabel(4, "PID");
 
     hTriggerId = new TH1F("hTriggerId", "Trigger ID", 1000, 450000, 451000);
+    hZDCWest = new TH1F("hZDCWest", "; ZDC ADC; Yield", 200, 0, 1200);
+    hZDCEast = new TH1F("hZDCEast", "; ZDC ADC; Yield", 200, 0, 1200);
+    hZDCWestvsEast = new TH2F("hZDCWestvsEast", "; ZDC West ADC; ZDC East ADC; Yield", 200, 0, 1200, 200, 0, 1200);
     hNPrimTracksPreCut = new TH1F("hNPrimTracksPreCut", "Number of Primary Tracks", 10, 0, 10);
     hNPrimTracks = new TH1F("hNPrimTracks", "Number of Primary Tracks", 10, 0, 10);
     hNPrimVertices = new TH1F("hNPrimVertices", "Number of Primary Vertices", 10, 0, 10);
@@ -79,6 +82,9 @@ bool StPairDstMaker::eventSelection(StUPCEvent *evt){
 
     hNPrimVertices->Fill(nVertices);
     hNPrimTracksPreCut->Fill(nTracks);
+
+    hZDCEast->Fill(evt->getZDCUnAttEast());
+    hZDCWest->Fill(evt->getZDCUnAttWest());
 
     return true;
 }

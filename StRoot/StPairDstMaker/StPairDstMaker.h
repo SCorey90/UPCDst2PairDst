@@ -5,6 +5,7 @@
 #include "StMaker.h"
 #include "TString.h"
 #include "TH1.h"
+#include "TH2.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "FemtoPairFormat.h"
@@ -47,6 +48,9 @@ private:
     TH1F* hEventCounter;
 
     TH1F* hTriggerId;
+    TH1F* hZDCWest;
+    TH1F* hZDCEast;
+    TH2F* hZDCWestvsEast;
     TH1F* hNPrimTracksPreCut;
     TH1F* hNPrimTracks;
     TH1F* hNPrimVertices;
