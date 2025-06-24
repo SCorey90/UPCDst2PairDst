@@ -85,6 +85,7 @@ bool StPairDstMaker::eventSelection(StUPCEvent *evt){
 
     hZDCEast->Fill(evt->getZDCUnAttEast());
     hZDCWest->Fill(evt->getZDCUnAttWest());
+    hZDCWestvsEast->Fill(evt->getZDCUnAttWest(), evt->getZDCUnAttEast());
 
     return true;
 }
@@ -245,6 +246,9 @@ Int_t StPairDstMaker::Finish() {
     hEventCounter->Write();
 
     hTriggerId->Write();
+    hZDCWest->Write();
+    hZDCEast->Write();
+    hZDCWestvsEast->Write();
     hNPrimTracksPreCut->Write();
     hNPrimTracks->Write();
     hNPrimVertices->Write();
