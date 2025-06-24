@@ -67,8 +67,8 @@ void runPairDst(const char* inputFileList = "mid14.lis", const char* outputFileN
     // triggers.push_back(350017); //upc main
 
     //run21 triggers
-    // triggers.push_back(860702); //upc inclusive
-    triggers.push_back(860701); //upc single zdc
+    triggers.push_back(860702); //upc inclusive
+    // triggers.push_back(860701); //upc single zdc
 
     mk->SetTriggerIds(triggers);  // Set the desired trigger ID
 
