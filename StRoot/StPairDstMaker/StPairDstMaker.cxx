@@ -57,7 +57,7 @@ bool StPairDstMaker::manualUPCmain(StUPCEvent* evt) {
     if (!evt) return false;
 
     // Check if the event has BBC activity
-    if (evt->getBBCSmallEast() > 0 || evt->getBBCSmallWest() > 0 || evt->getBBCLargeEast() > 0 || evt->getBBCLargeWest() > 0) {
+    if (evt->getBBCSmallEast() > 50 || evt->getBBCSmallWest() > 50) {
         return false;
     }
 
