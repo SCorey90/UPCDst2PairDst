@@ -21,6 +21,7 @@ public:
     virtual Int_t Make();
     virtual Int_t Finish();
 
+    bool manualUPCmain(StUPCEvent* evt);
     bool eventSelection(StUPCEvent* evt);
     bool trackSelection(StUPCTrack* track1, StUPCTrack* track2);
 

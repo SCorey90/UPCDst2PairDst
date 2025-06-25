@@ -53,6 +53,22 @@ Int_t StPairDstMaker::Init() {
     return kStOK;
 }
 
+bool StPairDstMaker::manualUPCmain(StUPCEvent* evt) {
+    if (!evt) return false;
+
+    // Check if the event has BBC activity
+    if (evt->getBBCSmallEast() > 0 || evt->getBBCSmallWest() > 0 || evt->getBBCLargeEast() > 0 || evt->getBBCLargeWest() > 0) {
+        return false;
+    }
+
+    // Check if 2<= TOF Hits <= 6
+    if (evt->getTOFMultiplicity() < 2 || evt->getTOFMultiplicity() > 6) {
+        return false;
+    }
+
+    return true;
+}
+
 bool StPairDstMaker::eventSelection(StUPCEvent *evt){
     if (!evt) return false;
 
@@ -72,6 +88,7 @@ bool StPairDstMaker::eventSelection(StUPCEvent *evt){
     }
 
     if (!isTriggered) return false;
+    if (!manualUPCmain(evt)) return false;
     for (int i = 0; i < fTriggerIds.size(); ++i) {
         if (evt->isTrigger(fTriggerIds[i])) {
             hTriggerId->Fill(fTriggerIds[i]);
