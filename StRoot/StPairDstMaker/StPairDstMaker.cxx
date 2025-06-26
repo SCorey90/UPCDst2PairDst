@@ -88,7 +88,7 @@ bool StPairDstMaker::eventSelection(StUPCEvent *evt){
     }
 
     if (!isTriggered) return false;
-    if (!manualUPCmain(evt)) return false;
+    // if (!manualUPCmain(evt)) return false;
     for (int i = 0; i < fTriggerIds.size(); ++i) {
         if (evt->isTrigger(fTriggerIds[i])) {
             hTriggerId->Fill(fTriggerIds[i]);
@@ -132,7 +132,7 @@ bool StPairDstMaker::trackSelection(StUPCTrack* track1, StUPCTrack* track2) {
 
     // if (chipipi2 > 20) return false;
 
-    if (dcaXY1 > 3 && dcaXY2 > 3) return false;
+    // if (dcaXY1 > 3 && dcaXY2 > 3) return false;
 
     // if (nHitsFit1 < 8 || nHitsFit2 < 8 || nHitsDEDx1 < 5 || nHitsDEDx2 < 5) return false;
 
@@ -191,7 +191,7 @@ Int_t StPairDstMaker::Make() {
             double nVertexR = sqrt(nVertexX * nVertexX + nVertexY * nVertexY);
             hVertexR->Fill(nVertexR);
 
-            if (nVertexR > 2.0) continue; // Vertex R cut
+            // if (nVertexR > 2.0) continue; // Vertex R cut
 
             fFemtoPair.mRunID = fUpcEvt->getRunNumber();
             fFemtoPair.mVertexZ = fUpcEvt->getVertex(0)->getPosZ();
